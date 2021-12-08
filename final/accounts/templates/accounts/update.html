@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block style %}
+  p, h1 {
+    color: white;
+  }
+{% endblock style %}
+
+{% block showcase %}
+  <h1>회원정보수정</h1>
+  <form action="{% url 'accounts:update' %}" method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit">
+  </form>
+{% endblock showcase %}

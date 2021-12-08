@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+
+{% block showcase %}
+  <h3 style="color:white;"> {{ movie.title }}</h3>
+  <hr>
+  <div style="display:flex;flex-direction:row">
+    <img style="column-count:4 " class = "movie-click" style="cursor:pointer" src="https://image.tmdb.org/t/p/w300{{ movie.poster_path }}" alt="poster"> <br>
+    <div style="display:flex;flex-direction:column;margin-left:30px;font-size:23px" >
+      <p style="row-count:8"></p>
+      <p style="color:white;row-count:2">내용 : {{ movie.overview }}</p>
+      <p style="color:white;row-count:1">평점 : {{ movie.vote_average }}</p>
+      <p style="color:white;row-count:1">개봉일자 : {{ movie.release_date }}</p>
+    </div>
+  </div>
+  
+  <hr>
+  <h4 style="color:white;">댓글 목록</h4>
+  {% if comments %}
+    <p style="color:white;"><b>{{ comments|length }}개의 댓글이 있습니다.</b></p>
+  {% endif %}
+  <ul>
+    {% for comment in comments %}
+      <div style="color:white;">
+        {{ comment.user }} - {{ comment.content }} - {{ comment.rank }}
+        {% if user == comment.user %}
+          <form action="{% url 'movies:comments_delete' movie.pk comment.pk %}" method="POST" class="d-inline">
+            {% csrf_token %}
+            <input type="submit" value="DELETE" style="background-color:rgb(229,9,20);" class="btn btn-outline-light ms-auto">
+          </form>
+        {% endif %}
+      </div>
+    {% empty %}
+      <p style="color:white;">첫 댓글을 작성해주세요!!</p>
+    {% endfor %}
+  </ul>
+  <br>
+  <hr>
+  {% if request.user.is_authenticated %}
+    <form style="color:white;" action="{% url 'movies:comments_create' movie.pk %}" method="POST">
+      {% csrf_token %}
+      {{ comment_form }}
+      <input type="submit" style="background-color:rgb(6,126,219);" value="작성" class="btn btn-outline-light ms-auto">
+    </form>
+  {% else %}
+    <a href="{% url 'accounts:login' %}">[댓글을 작성하려면 로그인하세요.]</a>
+  {% endif %}
+{% endblock showcase %}
